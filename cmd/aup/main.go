@@ -19,6 +19,8 @@ func main() {
 	} else {
 		flags(cfg)
 	}
+
+	types.Save(cfg)
 }
 
 func interactive(cfg *types.AUPData) {
@@ -38,17 +40,14 @@ func interactive(cfg *types.AUPData) {
 	case "a":
 		params := add.Gather()
 		add.Do(cfg, params)
-		types.Save(cfg)
 		return
 	case "u":
 		params := update.Gather(cfg)
 		update.Do(cfg, params)
-		types.Save(cfg)
 		return
 	case "r":
 		params := remove.Gather(cfg)
 		remove.Do(cfg, params)
-		types.Save(cfg)
 		return
 	case "e":
 		return
