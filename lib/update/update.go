@@ -3,6 +3,7 @@ package update
 import (
 	"flag"
 	"fmt"
+	"strings"
 
 	"github.com/lspaccatrosi16/aup/lib/get"
 	"github.com/lspaccatrosi16/aup/lib/list"
@@ -13,13 +14,16 @@ type updateData struct {
 	Entry *types.AUPEntry
 }
 
-func Gather(cfg *types.AUPData) *updateData {
-	opIdx := list.GetUserEntryIdx(cfg)
+func Gather(cfg *types.AUPData) (*updateData, error) {
+	opIdx, err := list.GetUserEntryIdx(cfg)
+	if err != nil {
+		return nil, err
+	}
 	entChosen := &cfg.Entries[opIdx]
 
 	return &updateData{
 		Entry: entChosen,
-	}
+	}, nil
 }
 
 func CLI(cfg *types.AUPData) (*updateData, error) {
@@ -53,6 +57,9 @@ func CLI(cfg *types.AUPData) (*updateData, error) {
 
 func Do(cfg *types.AUPData, params *updateData) {
 	entChosen := params.Entry
+	fmt.Printf("\nUpdate %s@%s\n", entChosen.BinaryName, entChosen.Version)
+	fmt.Println(strings.Repeat("=", 50))
+
 	latestFile, err := get.GetGHFile(entChosen.RepoKey, entChosen.ArtifactName)
 
 	if err != nil {
@@ -64,7 +71,24 @@ func Do(cfg *types.AUPData, params *updateData) {
 		fmt.Printf("Updated binary %s from %s to %s\n", entChosen.BinaryName, entChosen.Version, latestFile.Version)
 		entChosen.Version = latestFile.Version
 	} else {
-		fmt.Printf("Binary %s@%s is the latest version\n", entChosen.BinaryName, entChosen.Version)
+		fmt.Printf("Binary %s@%s is already the latest version\n", entChosen.BinaryName, entChosen.Version)
 	}
 
+}
+
+func Interactive(cfg *types.AUPData) error {
+	params, err := Gather(cfg)
+	if err != nil {
+		return err
+	}
+	Do(cfg, params)
+	return nil
+}
+
+func InteractiveAll(cfg *types.AUPData) error {
+	for _, e := range cfg.Entries {
+		params := updateData{Entry: &e}
+		Do(cfg, &params)
+	}
+	return nil
 }

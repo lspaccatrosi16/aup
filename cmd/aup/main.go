@@ -8,7 +8,7 @@ import (
 	"github.com/lspaccatrosi16/aup/lib/remove"
 	"github.com/lspaccatrosi16/aup/lib/types"
 	"github.com/lspaccatrosi16/aup/lib/update"
-	"github.com/lspaccatrosi16/go-cli-tools/input"
+	"github.com/lspaccatrosi16/go-cli-tools/command"
 )
 
 func main() {
@@ -24,33 +24,25 @@ func main() {
 }
 
 func interactive(cfg *types.AUPData) {
-	runoptions := []input.SelectOption{
-		{Name: "Add a new program", Value: "a"},
-		{Name: "Update a program", Value: "u"},
-		{Name: "Remove a program", Value: "r"},
-		{Name: "Exit", Value: "e"},
+	manager := command.NewManager(command.ManagerConfig{Searchable: false})
+
+	manager.Register("add", "Add a new program", provideConfig(cfg, add.Interactive))
+	manager.Register("update", "Update a program", provideConfig(cfg, update.Interactive))
+	manager.Register("updateall", "Update all programs", provideConfig(cfg, update.InteractiveAll))
+	manager.Register("remove", "Remove a program", provideConfig(cfg, remove.Interactive))
+
+	for {
+		exit := manager.Tui()
+		if exit {
+			break
+		}
 	}
 
-	opt, err := input.GetSelection("App updater", runoptions)
-	if err != nil {
-		panic(err)
-	}
+}
 
-	switch opt {
-	case "a":
-		params := add.Gather()
-		add.Do(cfg, params)
-		return
-	case "u":
-		params := update.Gather(cfg)
-		update.Do(cfg, params)
-		return
-	case "r":
-		params := remove.Gather(cfg)
-		remove.Do(cfg, params)
-		return
-	case "e":
-		return
+func provideConfig(cfg *types.AUPData, f func(*types.AUPData) error) func() error {
+	return func() error {
+		return f(cfg)
 	}
 }
 

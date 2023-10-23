@@ -1,27 +1,30 @@
 package list
 
 import (
-	"fmt"
-
 	"github.com/lspaccatrosi16/aup/lib/types"
-	"github.com/lspaccatrosi16/go-cli-tools/input"
+	"github.com/lspaccatrosi16/go-cli-tools/command"
 )
 
-func GetUserEntryIdx(cfg *types.AUPData) int {
-	options := []input.SelectOption{}
+func GetUserEntryIdx(cfg *types.AUPData) (int, error) {
+	manager := command.NewManager(command.ManagerConfig{Searchable: true})
 
-	for _, ent := range cfg.Entries {
-		options = append(options, input.SelectOption{
-			Name:  fmt.Sprintf("%s: %s", ent.RepoKey, ent.ArtifactName),
-			Value: "",
-		})
+	for i, ent := range cfg.Entries {
+		manager.RegisterData(ent.ArtifactName, ent.RepoKey, encloseIndex(i))
 	}
 
-	_, opIdx, err := input.GetSelectionIdx("Choose a Binary:", options)
+	vAny, err := manager.DataTui()
+
 	if err != nil {
-		panic(err)
+		return 0, err
 	}
 
-	return opIdx
+	idx := vAny.(int)
 
+	return idx, nil
+}
+
+func encloseIndex(idx int) func() (any, error) {
+	return func() (any, error) {
+		return idx, nil
+	}
 }

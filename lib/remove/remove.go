@@ -3,6 +3,7 @@ package remove
 import (
 	"flag"
 	"fmt"
+	"strings"
 
 	"github.com/lspaccatrosi16/aup/lib/list"
 	"github.com/lspaccatrosi16/aup/lib/types"
@@ -12,11 +13,15 @@ type removeData struct {
 	EntryIdx int
 }
 
-func Gather(cfg *types.AUPData) *removeData {
-	delIdx := list.GetUserEntryIdx(cfg)
+func Gather(cfg *types.AUPData) (*removeData, error) {
+	delIdx, err := list.GetUserEntryIdx(cfg)
+	if err != nil {
+		return nil, err
+	}
+
 	return &removeData{
 		EntryIdx: delIdx,
-	}
+	}, nil
 }
 
 func CLI(cfg *types.AUPData) (*removeData, error) {
@@ -49,6 +54,10 @@ func CLI(cfg *types.AUPData) (*removeData, error) {
 }
 
 func Do(cfg *types.AUPData, params *removeData) {
+	entRemove := cfg.Entries[params.EntryIdx]
+	fmt.Printf("\nRemove %s@%s\n", entRemove.BinaryName, entRemove.Version)
+	fmt.Println(strings.Repeat("=", 50))
+
 	newEnts := []types.AUPEntry{}
 	for i, ent := range cfg.Entries {
 		if i == params.EntryIdx {
@@ -59,4 +68,14 @@ func Do(cfg *types.AUPData, params *removeData) {
 	}
 
 	cfg.Entries = newEnts
+}
+
+func Interactive(cfg *types.AUPData) error {
+	params, err := Gather(cfg)
+	if err != nil {
+		return err
+	}
+
+	Do(cfg, params)
+	return nil
 }

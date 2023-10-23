@@ -34,6 +34,8 @@ func validator(str string) error {
 }
 
 func Gather() *addData {
+	fmt.Println("New Program")
+	fmt.Println(strings.Repeat("=", 50))
 	repoKey := input.GetValidatedInput("Repokey", validator)
 	artifactName := input.GetInput("Artifact Name")
 	binaryName := input.GetInput("Binary name (leave blank for artifact name)")
@@ -82,6 +84,9 @@ func CLI() (*addData, error) {
 }
 
 func Do(cfg *types.AUPData, params *addData) {
+	fmt.Printf("\nGet %s@\n", params.BName)
+	fmt.Println(strings.Repeat("=", 50))
+
 	file, err := get.GetGHFile(params.RKey, params.AName)
 	if err != nil {
 		panic(err)
@@ -98,4 +103,10 @@ func Do(cfg *types.AUPData, params *addData) {
 
 	fmt.Printf("Got binary %s@%s\n", entry.BinaryName, entry.Version)
 
+}
+
+func Interactive(cfg *types.AUPData) error {
+	params := Gather()
+	Do(cfg, params)
+	return nil
 }
