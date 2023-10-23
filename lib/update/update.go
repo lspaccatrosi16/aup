@@ -57,8 +57,8 @@ func CLI(cfg *types.AUPData) (*updateData, error) {
 
 func Do(cfg *types.AUPData, params *updateData) {
 	entChosen := params.Entry
-	fmt.Printf("\nUpdate %s@%s\n", entChosen.BinaryName, entChosen.Version)
-	fmt.Println(strings.Repeat("=", 50))
+	fmt.Println(strings.Repeat("=", 50), "\n", "")
+	fmt.Printf("Update %s@%s\n", entChosen.ArtifactName, entChosen.Version)
 
 	latestFile, err := get.GetGHFile(entChosen.RepoKey, entChosen.ArtifactName)
 

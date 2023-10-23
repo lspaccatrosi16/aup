@@ -84,13 +84,16 @@ func CLI() (*addData, error) {
 }
 
 func Do(cfg *types.AUPData, params *addData) {
-	fmt.Printf("\nGet %s@\n", params.BName)
-	fmt.Println(strings.Repeat("=", 50))
+	fmt.Println(strings.Repeat("=", 50), "\n", "")
+	fmt.Printf("Searching for %s/%s\n", params.RKey, params.AName)
 
 	file, err := get.GetGHFile(params.RKey, params.AName)
 	if err != nil {
 		panic(err)
 	}
+
+	fmt.Printf("Get %s@%s\n", params.AName, file.Version)
+
 	entry := types.AUPEntry{
 		BinaryName:   params.BName,
 		ArtifactName: params.AName,

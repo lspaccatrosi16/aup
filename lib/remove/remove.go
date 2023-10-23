@@ -55,8 +55,8 @@ func CLI(cfg *types.AUPData) (*removeData, error) {
 
 func Do(cfg *types.AUPData, params *removeData) {
 	entRemove := cfg.Entries[params.EntryIdx]
-	fmt.Printf("\nRemove %s@%s\n", entRemove.BinaryName, entRemove.Version)
-	fmt.Println(strings.Repeat("=", 50))
+	fmt.Println(strings.Repeat("=", 50), "\n", "")
+	fmt.Printf("Remove %s@%s\n", entRemove.ArtifactName, entRemove.Version)
 
 	newEnts := []types.AUPEntry{}
 	for i, ent := range cfg.Entries {
