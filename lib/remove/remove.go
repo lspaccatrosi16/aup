@@ -3,6 +3,8 @@ package remove
 import (
 	"flag"
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 
 	"github.com/lspaccatrosi16/aup/lib/list"
@@ -53,7 +55,7 @@ func CLI(cfg *types.AUPData) (*removeData, error) {
 
 }
 
-func Do(cfg *types.AUPData, params *removeData) {
+func Do(cfg *types.AUPData, params *removeData) error {
 	entRemove := cfg.Entries[params.EntryIdx]
 	fmt.Println(strings.Repeat("=", 50), "\n", "")
 	fmt.Printf("Remove %s@%s\n", entRemove.ArtifactName, entRemove.Version)
@@ -67,7 +69,16 @@ func Do(cfg *types.AUPData, params *removeData) {
 		}
 	}
 
+	path := filepath.Join(types.CPath(), entRemove.BinaryName)
+
+	err := os.Remove(path)
+
+	if err != nil {
+		return err
+	}
+
 	cfg.Entries = newEnts
+	return nil
 }
 
 func Interactive(cfg *types.AUPData) error {
@@ -76,6 +87,10 @@ func Interactive(cfg *types.AUPData) error {
 		return err
 	}
 
-	Do(cfg, params)
+	err = Do(cfg, params)
+
+	if err != nil {
+		return err
+	}
 	return nil
 }
