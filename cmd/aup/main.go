@@ -19,8 +19,6 @@ func main() {
 	} else {
 		flags(cfg)
 	}
-
-	types.Save(cfg)
 }
 
 func interactive(cfg *types.AUPData) {
@@ -33,6 +31,7 @@ func interactive(cfg *types.AUPData) {
 
 	for {
 		exit := manager.Tui()
+		types.Save(cfg)
 		if exit {
 			break
 		}

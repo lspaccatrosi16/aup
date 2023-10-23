@@ -86,9 +86,11 @@ func Interactive(cfg *types.AUPData) error {
 }
 
 func InteractiveAll(cfg *types.AUPData) error {
-	for _, e := range cfg.Entries {
-		params := updateData{Entry: &e}
+	for i := 0; i < len(cfg.Entries); i++ {
+		e := &cfg.Entries[i]
+		params := updateData{Entry: e}
 		Do(cfg, &params)
 	}
+
 	return nil
 }
