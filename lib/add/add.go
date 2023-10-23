@@ -85,6 +85,13 @@ func CLI() (*addData, error) {
 
 func Do(cfg *types.AUPData, params *addData) {
 	fmt.Println(strings.Repeat("=", 50), "\n", "")
+	for _, e := range cfg.Entries {
+		if e.ArtifactName == params.AName && e.RepoKey == params.RKey {
+			fmt.Printf("%s/%s is already intstalled at %s\n", e.RepoKey, e.ArtifactName, e.Version)
+			return
+		}
+	}
+
 	fmt.Printf("Searching for %s/%s\n", params.RKey, params.AName)
 
 	file, err := get.GetGHFile(params.RKey, params.AName)
