@@ -75,4 +75,5 @@ func flags(cfg *types.AUPData) {
 		fmt.Printf("command \"%s\" is not recognized \n", scmd)
 		os.Exit(1)
 	}
+	types.Save(cfg)
 }
