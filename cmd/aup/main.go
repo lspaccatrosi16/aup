@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/lspaccatrosi16/aup/lib/add"
+	"github.com/lspaccatrosi16/aup/lib/configure"
 	"github.com/lspaccatrosi16/aup/lib/remove"
 	"github.com/lspaccatrosi16/aup/lib/types"
 	"github.com/lspaccatrosi16/aup/lib/update"
@@ -30,6 +31,7 @@ func interactive(cfg *types.AUPData) {
 	manager.Register("updateall", "Update all programs", provideConfig(cfg, update.InteractiveAll))
 	manager.Register("remove", "Remove a program", provideConfig(cfg, remove.Interactive))
 	manager.Register("version", "See all installed programs", provideConfig(cfg, version.Interactive))
+	manager.Register("configure", "Configure AUP", provideConfig(cfg, configure.Interactive))
 
 	for {
 		exit := manager.Tui()

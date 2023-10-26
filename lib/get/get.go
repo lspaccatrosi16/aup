@@ -54,14 +54,14 @@ func GetGHFile(repoKey string, artifactName string) (*types.GHFile, error) {
 	return ghFile, nil
 }
 
-func DGHFile(url string, binaryName string) {
+func DGHFile(cfg *types.AUPData, url string, binaryName string) {
 	resp, err := http.Get(url)
 	if err != nil {
 		panic(err)
 	}
 
 	defer resp.Body.Close()
-	targetPath := filepath.Join(types.CPath(), binaryName)
+	targetPath := filepath.Join(cfg.AppPath(binaryName), binaryName)
 
 	fh, err := os.Create(targetPath)
 	if err != nil {

@@ -109,10 +109,9 @@ func Do(cfg *types.AUPData, params *addData) {
 	}
 
 	cfg.Entries = append(cfg.Entries, entry)
-	get.DGHFile(file.Url, params.BName)
+	get.DGHFile(cfg, file.Url, params.BName)
 
 	fmt.Printf("Got binary %s@%s\n", entry.BinaryName, entry.Version)
-
 }
 
 func Interactive(cfg *types.AUPData) error {

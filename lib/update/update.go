@@ -67,7 +67,7 @@ func Do(cfg *types.AUPData, params *updateData) {
 	}
 
 	if latestFile.Version != entChosen.Version {
-		get.DGHFile(latestFile.Url, entChosen.BinaryName)
+		get.DGHFile(cfg, latestFile.Url, entChosen.BinaryName)
 		fmt.Printf("Updated binary %s from %s to %s\n", entChosen.BinaryName, entChosen.Version, latestFile.Version)
 		entChosen.Version = latestFile.Version
 	} else {

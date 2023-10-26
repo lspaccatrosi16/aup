@@ -69,7 +69,7 @@ func Do(cfg *types.AUPData, params *removeData) error {
 		}
 	}
 
-	path := filepath.Join(types.CPath(), entRemove.BinaryName)
+	path := filepath.Join(cfg.AppPath(entRemove.BinaryName), entRemove.BinaryName)
 
 	err := os.Remove(path)
 
