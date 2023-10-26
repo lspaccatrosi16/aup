@@ -8,6 +8,7 @@ import (
 	"github.com/lspaccatrosi16/aup/lib/remove"
 	"github.com/lspaccatrosi16/aup/lib/types"
 	"github.com/lspaccatrosi16/aup/lib/update"
+	"github.com/lspaccatrosi16/aup/lib/version"
 	"github.com/lspaccatrosi16/go-cli-tools/command"
 )
 
@@ -22,12 +23,13 @@ func main() {
 }
 
 func interactive(cfg *types.AUPData) {
-	manager := command.NewManager(command.ManagerConfig{Searchable: false})
+	manager := command.NewManager(command.ManagerConfig{Searchable: true})
 
 	manager.Register("add", "Add a new program", provideConfig(cfg, add.Interactive))
 	manager.Register("update", "Update a program", provideConfig(cfg, update.Interactive))
 	manager.Register("updateall", "Update all programs", provideConfig(cfg, update.InteractiveAll))
 	manager.Register("remove", "Remove a program", provideConfig(cfg, remove.Interactive))
+	manager.Register("version", "See all installed programs", provideConfig(cfg, version.Interactive))
 
 	for {
 		exit := manager.Tui()
@@ -71,6 +73,8 @@ func flags(cfg *types.AUPData) {
 			os.Exit(1)
 		}
 		remove.Do(cfg, params)
+	case "version":
+		version.Do(cfg)
 	default:
 		fmt.Printf("command \"%s\" is not recognized \n", scmd)
 		os.Exit(1)
