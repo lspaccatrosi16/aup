@@ -8,6 +8,8 @@ github.com/kirsle/configdir v0.0.0-20170128060238-e45d2f54772f h1:dKccXx7xA56UNq
 github.com/kirsle/configdir v0.0.0-20170128060238-e45d2f54772f/go.mod h1:4rEELDSfUAlBSyUjPG0JnaNGjf13JySHFeRdD/3dLP0=
 github.com/lspaccatrosi16/go-cli-tools v0.2.4 h1:J9xiZcDOsd9ENGsQP5lN2N1etoA59skL1+Phg3sGLa8=
 github.com/lspaccatrosi16/go-cli-tools v0.2.4/go.mod h1:ppOT+F1t4THNKFcvLjED6tVHPZ2Opq4+yZv6aukjR98=
+github.com/lspaccatrosi16/go-cli-tools v0.2.5 h1:kcc8oQphZnTuAqwXe+9HPz73jT15wa4TiEE/gLOZvw8=
+github.com/lspaccatrosi16/go-cli-tools v0.2.5/go.mod h1:ppOT+F1t4THNKFcvLjED6tVHPZ2Opq4+yZv6aukjR98=
 github.com/manifoldco/promptui v0.9.0 h1:3V4HzJk1TtXW1MTZMP7mdlwbBpIinw3HztaIlYthEiA=
 github.com/manifoldco/promptui v0.9.0/go.mod h1:ka04sppxSGFAtxX0qhlYQjISsg9mR4GWtQEhdbn6Pgg=
 golang.org/x/sys v0.0.0-20181122145206-62eef0e2fa9b/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
