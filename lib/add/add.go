@@ -10,7 +10,7 @@ import (
 	"github.com/lspaccatrosi16/go-cli-tools/input"
 )
 
-type addData struct {
+type AddData struct {
 	RKey  string
 	AName string
 	BName string
@@ -33,7 +33,7 @@ func validator(str string) error {
 	return nil
 }
 
-func Gather() *addData {
+func Gather() *AddData {
 	fmt.Println("New Program")
 	fmt.Println(strings.Repeat("=", 50))
 	repoKey := input.GetValidatedInput("Repokey", validator)
@@ -43,14 +43,14 @@ func Gather() *addData {
 		binaryName = artifactName
 	}
 
-	return &addData{
+	return &AddData{
 		RKey:  repoKey,
 		AName: artifactName,
 		BName: binaryName,
 	}
 }
 
-func CLI() (*addData, error) {
+func CLI() (*AddData, error) {
 	var repoKey string
 	var artifactName string
 	var binaryName string
@@ -75,7 +75,7 @@ func CLI() (*addData, error) {
 		return nil, verr
 	}
 
-	return &addData{
+	return &AddData{
 		RKey:  repoKey,
 		AName: artifactName,
 		BName: binaryName,
@@ -83,23 +83,21 @@ func CLI() (*addData, error) {
 
 }
 
-func Do(cfg *types.AUPData, params *addData) {
+func Do(cfg *types.AUPData, params *AddData) error {
 	fmt.Println(strings.Repeat("=", 50), "\n", "")
 	for _, e := range cfg.Entries {
 		if e.ArtifactName == params.AName && e.RepoKey == params.RKey {
-			fmt.Printf("%s/%s is already intstalled at %s\n", e.RepoKey, e.ArtifactName, e.Version)
-			return
+			fmt.Printf("%s is already intstalled at %s\n", e.ArtDetails(), e.Version)
+			return nil
 		}
 	}
 
 	fmt.Printf("Searching for %s/%s\n", params.RKey, params.AName)
 
-	file, err := get.GetGHFile(params.RKey, params.AName)
+	file, err := get.GHReleaseInfo(params.RKey, params.AName)
 	if err != nil {
-		panic(err)
+		return err
 	}
-
-	fmt.Printf("Get %s@%s\n", params.AName, file.Version)
 
 	entry := types.AUPEntry{
 		BinaryName:   params.BName,
@@ -108,14 +106,19 @@ func Do(cfg *types.AUPData, params *addData) {
 		Version:      file.Version,
 	}
 
+	fmt.Printf("Get %s\n", entry.BinDetails())
 	cfg.Entries = append(cfg.Entries, entry)
-	get.DGHFile(cfg, file.Url, params.BName)
+	err = get.DownloadGHBin(cfg, file.Url, params.BName)
 
-	fmt.Printf("Got binary %s@%s\n", entry.BinaryName, entry.Version)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("Got binary %s\n", entry.BinDetails())
+	return nil
 }
 
 func Interactive(cfg *types.AUPData) error {
 	params := Gather()
-	Do(cfg, params)
-	return nil
+	return Do(cfg, params)
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/lspaccatrosi16/aup/lib/add"
 	"github.com/lspaccatrosi16/aup/lib/configure"
 	"github.com/lspaccatrosi16/aup/lib/remove"
+	"github.com/lspaccatrosi16/aup/lib/repair"
 	"github.com/lspaccatrosi16/aup/lib/types"
 	"github.com/lspaccatrosi16/aup/lib/update"
 	"github.com/lspaccatrosi16/aup/lib/version"
@@ -14,7 +15,11 @@ import (
 )
 
 func main() {
-	cfg := types.Load()
+	cfg, err := types.Load()
+	if err != nil {
+		fmt.Println("error loading config:")
+		panic(err)
+	}
 
 	if len(os.Args) <= 1 {
 		interactive(cfg)
@@ -32,6 +37,7 @@ func interactive(cfg *types.AUPData) {
 	manager.Register("remove", "Remove a program", provideConfig(cfg, remove.Interactive))
 	manager.Register("version", "See all installed programs", provideConfig(cfg, version.Interactive))
 	manager.Register("configure", "Configure AUP", provideConfig(cfg, configure.Interactive))
+	manager.Register("repair", "Repair installed programs", provideConfig(cfg, repair.Interactive))
 
 	for {
 		exit := manager.Tui()
@@ -52,34 +58,45 @@ func provideConfig(cfg *types.AUPData, f func(*types.AUPData) error) func() erro
 func flags(cfg *types.AUPData) {
 	scmd := os.Args[len(os.Args)-1]
 
+	var err error
+
 	switch scmd {
 	case "add":
-		params, err := add.CLI()
+		var params *add.AddData
+		params, err = add.CLI()
 		if err != nil {
 			fmt.Println(err.Error())
 			os.Exit(1)
 		}
-		add.Do(cfg, params)
+		err = add.Do(cfg, params)
 	case "update":
-		params, err := update.CLI(cfg)
+		var params *update.UpdateData
+		params, err = update.CLI(cfg)
 		if err != nil {
 			fmt.Println(err.Error())
 			os.Exit(1)
 		}
-		update.Do(cfg, params)
+		err = update.Do(cfg, params)
 
 	case "remove":
-		params, err := remove.CLI(cfg)
+		var params *remove.RemoveData
+		params, err = remove.CLI(cfg)
 		if err != nil {
 			fmt.Println(err.Error())
 			os.Exit(1)
 		}
-		remove.Do(cfg, params)
+		err = remove.Do(cfg, params)
 	case "version":
 		version.Do(cfg)
+	case "repair":
+		err = repair.Do(cfg)
 	default:
 		fmt.Printf("command \"%s\" is not recognized \n", scmd)
 		os.Exit(1)
 	}
+	if err != nil {
+		panic(err)
+	}
+
 	types.Save(cfg)
 }

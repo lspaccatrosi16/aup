@@ -28,6 +28,10 @@ github.com/lspaccatrosi16/go-cli-tools v0.3.1 h1:92Bn56Vdn7gxuJ691mTPzhQwtRn/kQ7
 github.com/lspaccatrosi16/go-cli-tools v0.3.1/go.mod h1:ppOT+F1t4THNKFcvLjED6tVHPZ2Opq4+yZv6aukjR98=
 github.com/lspaccatrosi16/go-cli-tools v0.3.2 h1:rgQW23fIIV1kvn9mvoaW+aggC7axm57tGcC3iPFs8WI=
 github.com/lspaccatrosi16/go-cli-tools v0.3.2/go.mod h1:ppOT+F1t4THNKFcvLjED6tVHPZ2Opq4+yZv6aukjR98=
+github.com/lspaccatrosi16/go-cli-tools v0.3.3-0.20231027082020-fb310c55d387 h1:dt7PSXlzxxGyoeZa7wQaSOO1fgjl1q7d7MXF9n1tO3E=
+github.com/lspaccatrosi16/go-cli-tools v0.3.3-0.20231027082020-fb310c55d387/go.mod h1:ppOT+F1t4THNKFcvLjED6tVHPZ2Opq4+yZv6aukjR98=
+github.com/lspaccatrosi16/go-cli-tools v0.3.4 h1:kCQZAtUlxlD3OJdDBiuqxgyc7g7rMtF1aoTBA50HjM0=
+github.com/lspaccatrosi16/go-cli-tools v0.3.4/go.mod h1:ppOT+F1t4THNKFcvLjED6tVHPZ2Opq4+yZv6aukjR98=
 github.com/manifoldco/promptui v0.9.0 h1:3V4HzJk1TtXW1MTZMP7mdlwbBpIinw3HztaIlYthEiA=
 github.com/manifoldco/promptui v0.9.0/go.mod h1:ka04sppxSGFAtxX0qhlYQjISsg9mR4GWtQEhdbn6Pgg=
 golang.org/x/sys v0.0.0-20181122145206-62eef0e2fa9b/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=

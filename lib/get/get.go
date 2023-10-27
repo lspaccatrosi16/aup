@@ -12,7 +12,7 @@ import (
 	"github.com/lspaccatrosi16/aup/lib/types"
 )
 
-func GetGHFile(repoKey string, artifactName string) (*types.GHFile, error) {
+func GHReleaseInfo(repoKey string, artifactName string) (*types.GHFile, error) {
 	requestUrl := fmt.Sprintf("https://api.github.com/repos/%s/releases/latest", repoKey)
 	resp, err := http.Get(requestUrl)
 
@@ -54,10 +54,10 @@ func GetGHFile(repoKey string, artifactName string) (*types.GHFile, error) {
 	return ghFile, nil
 }
 
-func DGHFile(cfg *types.AUPData, url string, binaryName string) {
+func DownloadGHBin(cfg *types.AUPData, url string, binaryName string) error {
 	resp, err := http.Get(url)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	defer resp.Body.Close()
@@ -65,7 +65,7 @@ func DGHFile(cfg *types.AUPData, url string, binaryName string) {
 
 	fh, err := os.Create(targetPath)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	io.Copy(fh, resp.Body)
@@ -74,7 +74,7 @@ func DGHFile(cfg *types.AUPData, url string, binaryName string) {
 
 	err = os.Chmod(targetPath, 0o755)
 	if err != nil {
-		panic(err)
+		return err
 	}
-
+	return nil
 }

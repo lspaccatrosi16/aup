@@ -11,22 +11,22 @@ import (
 	"github.com/lspaccatrosi16/aup/lib/types"
 )
 
-type removeData struct {
+type RemoveData struct {
 	EntryIdx int
 }
 
-func Gather(cfg *types.AUPData) (*removeData, error) {
+func Gather(cfg *types.AUPData) (*RemoveData, error) {
 	delIdx, err := list.GetUserEntryIdx(cfg)
 	if err != nil {
 		return nil, err
 	}
 
-	return &removeData{
+	return &RemoveData{
 		EntryIdx: delIdx,
 	}, nil
 }
 
-func CLI(cfg *types.AUPData) (*removeData, error) {
+func CLI(cfg *types.AUPData) (*RemoveData, error) {
 	var artifactName string
 	flag.StringVar(&artifactName, "a", "", "name of the artifact")
 
@@ -49,16 +49,16 @@ func CLI(cfg *types.AUPData) (*removeData, error) {
 		return nil, fmt.Errorf("could not find a binary with artifact name \"%s\"", artifactName)
 	}
 
-	return &removeData{
+	return &RemoveData{
 		EntryIdx: iFound,
 	}, nil
 
 }
 
-func Do(cfg *types.AUPData, params *removeData) error {
+func Do(cfg *types.AUPData, params *RemoveData) error {
 	entRemove := cfg.Entries[params.EntryIdx]
 	fmt.Println(strings.Repeat("=", 50), "\n", "")
-	fmt.Printf("Remove %s@%s\n", entRemove.ArtifactName, entRemove.Version)
+	fmt.Printf("Remove %s\n", entRemove.BinDetails())
 
 	newEnts := []types.AUPEntry{}
 	for i, ent := range cfg.Entries {

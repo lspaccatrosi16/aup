@@ -24,7 +24,7 @@ func Do(cfg *types.AUPData) {
 	maxVersion := 0
 
 	for _, e := range cfg.Entries {
-		str := fmt.Sprintf("%s/%s", e.RepoKey, e.ArtifactName)
+		str := e.ArtDetails()
 		if len(str) > maxName {
 			maxName = len(str)
 		}

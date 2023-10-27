@@ -19,6 +19,14 @@ type AUPEntry struct {
 	RepoKey      string
 }
 
+func (a *AUPEntry) ArtDetails() string {
+	return fmt.Sprintf("%s/%s", a.RepoKey, a.ArtifactName)
+}
+
+func (a *AUPEntry) BinDetails() string {
+	return fmt.Sprintf("%s@%s", a.BinaryName, a.Version)
+}
+
 func (a *AUPEntry) String() string {
 	buf := bytes.NewBuffer(nil)
 
@@ -70,7 +78,7 @@ type GHFile struct {
 	Url     string
 }
 
-func Save(a *AUPData) {
+func Save(a *AUPData) error {
 	buf := bytes.NewBuffer(nil)
 	for _, e := range a.Entries {
 		dir := a.AppPath(e.BinaryName)
@@ -80,7 +88,7 @@ func Save(a *AUPData) {
 	pathFile := filepath.Join(CPath(), ".auprc")
 	f, err := os.Create(pathFile)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	io.Copy(f, buf)
@@ -89,27 +97,28 @@ func Save(a *AUPData) {
 	enc := gbin.NewEncoder[AUPData]()
 	r, err := enc.EncodeStream(a)
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	f, err = os.Create(cfpath())
 	if err != nil {
-		panic(err)
+		return err
 	}
 
 	io.Copy(f, r)
 	f.Close()
+	return nil
 }
 
-func Load() *AUPData {
+func Load() (*AUPData, error) {
 	f, err := os.Open(cfpath())
 	if err != nil {
 		if os.IsNotExist(err) {
 			d := new(AUPData)
 			d.Config = new(AUPConfig)
-			return d
+			return d, nil
 		} else {
-			panic(err)
+			return nil, err
 		}
 	}
 	defer f.Close()
@@ -121,9 +130,9 @@ func Load() *AUPData {
 	}
 
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return cfg
+	return cfg, nil
 }
 
 func cfpath() string {
