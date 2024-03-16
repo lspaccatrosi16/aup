@@ -1,7 +1,6 @@
 package add
 
 import (
-	"flag"
 	"fmt"
 	"strings"
 
@@ -16,7 +15,7 @@ type AddData struct {
 	BName string
 }
 
-func validator(str string) error {
+func RepoKeyValidator(str string) error {
 	splitted := strings.Split(str, "/")
 	if len(splitted) != 2 {
 		return fmt.Errorf("repokey must be formatted in user/repo format e.g. lspaccatrosi16/scaffold")
@@ -36,7 +35,7 @@ func validator(str string) error {
 func Gather() *AddData {
 	fmt.Println("New Program")
 	fmt.Println(strings.Repeat("=", 50))
-	repoKey := input.GetValidatedInput("Repokey", validator)
+	repoKey := input.GetValidatedInput("Repokey", RepoKeyValidator)
 	artifactName := input.GetInput("Artifact Name")
 	binaryName := input.GetInput("Binary name (leave blank for artifact name)")
 	if binaryName == "" {
@@ -50,17 +49,7 @@ func Gather() *AddData {
 	}
 }
 
-func CLI() (*AddData, error) {
-	var repoKey string
-	var artifactName string
-	var binaryName string
-
-	flag.StringVar(&repoKey, "r", "", "repoKey of the executable")
-	flag.StringVar(&artifactName, "a", "", "name of the artifact")
-	flag.StringVar(&binaryName, "b", "", "local name of the binary to use")
-
-	flag.Parse()
-
+func CLI(artifactName, binaryName, repoKey string) (*AddData, error) {
 	if artifactName == "" {
 		return nil, fmt.Errorf("artifact name must not be \"\"")
 	}
@@ -69,7 +58,7 @@ func CLI() (*AddData, error) {
 		binaryName = artifactName
 	}
 
-	verr := validator(repoKey)
+	verr := RepoKeyValidator(repoKey)
 
 	if verr != nil {
 		return nil, verr

@@ -1,7 +1,6 @@
 package update
 
 import (
-	"flag"
 	"fmt"
 	"strings"
 
@@ -26,12 +25,7 @@ func Gather(cfg *types.AUPData) (*UpdateData, error) {
 	}, nil
 }
 
-func CLI(cfg *types.AUPData) (*UpdateData, error) {
-	var artifactName string
-	flag.StringVar(&artifactName, "a", "", "name of the artifact")
-
-	flag.Parse()
-
+func CLI(cfg *types.AUPData, artifactName string) (*UpdateData, error) {
 	if artifactName == "" {
 		return nil, fmt.Errorf("artifact name must not be \"\"")
 	}

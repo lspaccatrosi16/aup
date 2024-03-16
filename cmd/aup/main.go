@@ -1,8 +1,10 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
+	"text/tabwriter"
 
 	"github.com/lspaccatrosi16/aup/lib/add"
 	"github.com/lspaccatrosi16/aup/lib/configure"
@@ -14,7 +16,19 @@ import (
 	"github.com/lspaccatrosi16/go-cli-tools/command"
 )
 
+var help = flag.Bool("h", false, "shows help message")
+var repokey = flag.String("r", "", "repoKey of the executable")
+var artifactName = flag.String("a", "", "name of the artifact")
+var binaryName = flag.String("b", "", "local name of the binary to use")
+
 func main() {
+	flag.Parse()
+
+	if *help {
+		flag.Usage()
+		os.Exit(0)
+	}
+
 	cfg, err := types.Load()
 	if err != nil {
 		fmt.Println("error loading config:")
@@ -55,15 +69,51 @@ func provideConfig(cfg *types.AUPData, f func(*types.AUPData) error) func() erro
 	}
 }
 
+type commandReq struct {
+	CmdName string
+	Args    []bool
+}
+
+var commands = []commandReq{
+	{"add", []bool{true, true, true}},
+	{"update", []bool{true, false, false}},
+	{"remove", []bool{true, false, false}},
+	{"version", []bool{false, false, false}},
+	{"repair", []bool{false, false, false}},
+	{"help", []bool{false, false, false}},
+}
+
+var reqFlagName = []string{"a", "b", "r"}
+
 func flags(cfg *types.AUPData) {
-	scmd := os.Args[len(os.Args)-1]
+	scmd := flag.Args()[0]
+
+	found := false
+	params := []string{*artifactName, *binaryName, *repokey}
+
+	for _, c := range commands {
+		if scmd == c.CmdName {
+			found = true
+			for i, b := range c.Args {
+				if b && params[i] == "" {
+					fmt.Printf("invalid arguments: expected -%s\n", reqFlagName[i])
+					os.Exit(1)
+				}
+			}
+		}
+	}
+
+	if !found {
+		fmt.Printf("command \"%s\" was not recognized \n", scmd)
+		scmd = "help"
+	}
 
 	var err error
 
 	switch scmd {
 	case "add":
 		var params *add.AddData
-		params, err = add.CLI()
+		params, err = add.CLI(*artifactName, *binaryName, *repokey)
 		if err != nil {
 			fmt.Println(err.Error())
 			os.Exit(1)
@@ -71,7 +121,7 @@ func flags(cfg *types.AUPData) {
 		err = add.Do(cfg, params)
 	case "update":
 		var params *update.UpdateData
-		params, err = update.CLI(cfg)
+		params, err = update.CLI(cfg, *artifactName)
 		if err != nil {
 			fmt.Println(err.Error())
 			os.Exit(1)
@@ -80,7 +130,7 @@ func flags(cfg *types.AUPData) {
 
 	case "remove":
 		var params *remove.RemoveData
-		params, err = remove.CLI(cfg)
+		params, err = remove.CLI(cfg, *artifactName)
 		if err != nil {
 			fmt.Println(err.Error())
 			os.Exit(1)
@@ -90,9 +140,23 @@ func flags(cfg *types.AUPData) {
 		version.Do(cfg)
 	case "repair":
 		err = repair.Do(cfg)
-	default:
-		fmt.Printf("command \"%s\" is not recognized \n", scmd)
-		os.Exit(1)
+	case "help":
+		fmt.Println("Availible Commands:")
+
+		writer := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
+
+		for _, c := range commands {
+			reqStr := ""
+			for i, b := range c.Args {
+				if b {
+					reqStr += " -" + reqFlagName[i]
+				}
+			}
+			fmt.Fprintf(writer, "%s\t%s\n", c.CmdName, reqStr)
+		}
+
+		writer.Flush()
+		os.Exit(0)
 	}
 	if err != nil {
 		panic(err)

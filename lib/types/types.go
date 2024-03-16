@@ -9,7 +9,7 @@ import (
 	"strings"
 
 	"github.com/lspaccatrosi16/go-cli-tools/config"
-	"github.com/lspaccatrosi16/go-cli-tools/gbin"
+	"github.com/lspaccatrosi16/go-libs/gbin"
 )
 
 type AUPEntry struct {

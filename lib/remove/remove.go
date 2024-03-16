@@ -1,7 +1,6 @@
 package remove
 
 import (
-	"flag"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -26,12 +25,7 @@ func Gather(cfg *types.AUPData) (*RemoveData, error) {
 	}, nil
 }
 
-func CLI(cfg *types.AUPData) (*RemoveData, error) {
-	var artifactName string
-	flag.StringVar(&artifactName, "a", "", "name of the artifact")
-
-	flag.Parse()
-
+func CLI(cfg *types.AUPData, artifactName string) (*RemoveData, error) {
 	if artifactName == "" {
 		return nil, fmt.Errorf("artifact name must not be \"\"")
 	}
